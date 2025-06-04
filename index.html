@@ -117,10 +117,7 @@
 
     let timerLabel = "demoTimer";
 
-    // State for console.group to prevent nesting issues
     let groupActive = false;
-
-    // Button Handlers by index (ordered as in HTML)
     errorBtns.forEach((btn, i) => {
       switch (btn.textContent) {
         case "Console Log":
@@ -230,12 +227,9 @@
 
         case "Trigger a Global Error":
           btn.onclick = () => {
-            // Trigger a global error by calling an undefined function
             try {
               nonExistentFunction();
             } catch (e) {
-              // Normally this error is caught here and not global,
-              // So we rethrow asynchronously to trigger global error
               setTimeout(() => {
                 throw e;
               }, 0);
@@ -245,11 +239,9 @@
       }
     });
 
-    // Step 3: Example Try/Catch/Finally usage outside buttons
-    // Just a demo function to show realistic error handling
+    // Step 3: Example Try/Catch/Finally 
     function tryCatchDemo() {
       try {
-        // Let's try to get an element that might not exist (simulate)
         const missingEl = document.getElementById("missing-element");
         if (!missingEl) throw new Error("Element #missing-element not found!");
         missingEl.textContent = "This won't run";
@@ -259,8 +251,8 @@
         console.log("Try/catch/finally block completed");
       }
     }
-    // Call it once on page load (optional)
     tryCatchDemo();
+
 // Define a Custom Error class
 class CustomError extends Error {
   constructor(message) {
@@ -268,10 +260,10 @@ class CustomError extends Error {
     this.name = "CustomError";
   }
 }
-// Example custom error usage - you can call this somewhere or add a button if you want
+
 function throwCustomErrorDemo() {
       try {
-        let input = ""; // invalid input
+        let input = ""; 
         if (!input) throw new CustomError("Input cannot be empty!");
       } catch (err) {
         if (err instanceof CustomError) {
@@ -281,17 +273,16 @@ function throwCustomErrorDemo() {
         }
       }
     }
-    // Just call on page load for demo purposes:
     throwCustomErrorDemo();
 
-    // Step 5: Global error handler for logging all uncaught errors
+    // Step 5: Global error handler 
     window.addEventListener("error", (event) => {
       console.log("Global error caught:");
       console.log("Message:", event.message);
       console.log("Source:", event.filename);
       console.log("Line:", event.lineno, "Column:", event.colno);
       console.log("Error object:", event.error);
-      // Here you could send errors to a backend or 3rd party service like TrackJS
+      
     });
 
 
