@@ -47,6 +47,13 @@
       width: 122px;
     }
   </style>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "1d9b2487aa434f49a1e5142bc2482421"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
 </head>
 
 <body>
@@ -86,7 +93,6 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -102,6 +108,193 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+    const sampleObj = { name: "Lab 9 Demo", version: 1.0, features: ["console", "error handling", "TrackJS"] };
+    const sampleArr = [
+      { id: 1, item: "Apple", price: 0.99 },
+      { id: 2, item: "Banana", price: 0.59 },
+      { id: 3, item: "Cherry", price: 2.99 }
+    ];
+
+    let timerLabel = "demoTimer";
+
+    // State for console.group to prevent nesting issues
+    let groupActive = false;
+
+    // Button Handlers by index (ordered as in HTML)
+    errorBtns.forEach((btn, i) => {
+      switch (btn.textContent) {
+        case "Console Log":
+          btn.onclick = () => {
+            console.log("Console.log demo:", sampleObj);
+          };
+          break;
+
+        case "Console Error":
+          btn.onclick = () => {
+            console.error("Console.error demo: This is an error message!");
+          };
+          break;
+
+        case "Console Count":
+          btn.onclick = () => {
+            console.count("Count demo");
+          };
+          break;
+
+        case "Console Warn":
+          btn.onclick = () => {
+            console.warn("Console.warn demo: This is a warning!");
+          };
+          break;
+
+        case "Console Assert":
+          btn.onclick = () => {
+            const x = 5;
+            console.assert(x > 10, "Console.assert failed: x is not > 10");
+          };
+          break;
+
+        case "Console Clear":
+          btn.onclick = () => {
+            console.clear();
+          };
+          break;
+
+        case "Console Dir":
+          btn.onclick = () => {
+            console.dir(sampleObj);
+          };
+          break;
+
+        case "Console dirxml":
+          btn.onclick = () => {
+            console.dirxml(document.querySelector('form'));
+          };
+          break;
+
+        case "Console Group Start":
+          btn.onclick = () => {
+            if (!groupActive) {
+              console.group("Demo Group Start");
+              groupActive = true;
+            } else {
+              console.warn("Group is already active!");
+            }
+          };
+          break;
+
+        case "Console Group End":
+          btn.onclick = () => {
+            if (groupActive) {
+              console.groupEnd();
+              groupActive = false;
+            } else {
+              console.warn("No active group to end.");
+            }
+          };
+          break;
+
+        case "Console Table":
+          btn.onclick = () => {
+            console.table(sampleArr);
+          };
+          break;
+
+        case "Start Timer":
+          btn.onclick = () => {
+            console.time(timerLabel);
+            console.log("Timer started");
+          };
+          break;
+
+        case "End Timer":
+          btn.onclick = () => {
+            console.timeEnd(timerLabel);
+          };
+          break;
+
+        case "Console Trace":
+          btn.onclick = () => {
+            function a() {
+              b();
+            }
+            function b() {
+              c();
+            }
+            function c() {
+              console.trace("Trace demo:");
+            }
+            a();
+          };
+          break;
+
+        case "Trigger a Global Error":
+          btn.onclick = () => {
+            // Trigger a global error by calling an undefined function
+            try {
+              nonExistentFunction();
+            } catch (e) {
+              // Normally this error is caught here and not global,
+              // So we rethrow asynchronously to trigger global error
+              setTimeout(() => {
+                throw e;
+              }, 0);
+            }
+          };
+          break;
+      }
+    });
+
+    // Step 3: Example Try/Catch/Finally usage outside buttons
+    // Just a demo function to show realistic error handling
+    function tryCatchDemo() {
+      try {
+        // Let's try to get an element that might not exist (simulate)
+        const missingEl = document.getElementById("missing-element");
+        if (!missingEl) throw new Error("Element #missing-element not found!");
+        missingEl.textContent = "This won't run";
+      } catch (error) {
+        console.error("Caught error in try/catch:", error.message);
+      } finally {
+        console.log("Try/catch/finally block completed");
+      }
+    }
+    // Call it once on page load (optional)
+    tryCatchDemo();
+// Define a Custom Error class
+class CustomError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "CustomError";
+  }
+}
+// Example custom error usage - you can call this somewhere or add a button if you want
+function throwCustomErrorDemo() {
+      try {
+        let input = ""; // invalid input
+        if (!input) throw new CustomError("Input cannot be empty!");
+      } catch (err) {
+        if (err instanceof CustomError) {
+          console.error("CustomError caught:", err.message);
+        } else {
+          console.error("Unknown error:", err);
+        }
+      }
+    }
+    // Just call on page load for demo purposes:
+    throwCustomErrorDemo();
+
+    // Step 5: Global error handler for logging all uncaught errors
+    window.addEventListener("error", (event) => {
+      console.log("Global error caught:");
+      console.log("Message:", event.message);
+      console.log("Source:", event.filename);
+      console.log("Line:", event.lineno, "Column:", event.colno);
+      console.log("Error object:", event.error);
+      // Here you could send errors to a backend or 3rd party service like TrackJS
+    });
+
+
   </script>
 </body>
 
